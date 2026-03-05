@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Therapeutic Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0F172A;
+            --chat-bg: #1E293B;
+            --text-color: #F1F5F9;
+            --user-bubble: #A78BFA;
+            --ai-bubble: #60A5FA;
+            --input-bg: #1E293B;
+            --border-color: #475569;
+            --send-btn: linear-gradient(135deg, #F59E0B, #D97706);
+            --send-btn-hover: linear-gradient(135deg, #D97706, #B45309);
+            --mic-btn: #34D399;
+            --mic-btn-hover: #2CA87F;
+            --mic-btn-active: #FBBF24;
+            --intervention-bg: #FCD34D;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --input-text-bg: #F1F5F9;
+        }
+        [data-theme="light"] {
+            --bg-color: #FDFCFA;
+            --chat-bg: #FFF7ED;
+            --text-color: #1F2937;
+            --user-bubble: #F9A8D4;
+            --ai-bubble: #7DD3FC;
+            --input-bg: #FFF7ED;
+            --border-color: #D1D5DB;
+            --send-btn: linear-gradient(135deg, #FBBF24, #F59E0B);
+            --send-btn-hover: linear-gradient(135deg, #F59E0B, #D97706);
+            --mic-btn: #34D399;
+            --mic-btn-hover: #2CA87F;
+            --mic-btn-active: #FBBF24;
+            --intervention-bg: #FDE68A;
+            --shadow: rgba(0, 0, 0, 0.15);
+            --input-text-bg: #FEF3C7;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            letter-spacing: 0.02em;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: var(--chat-bg);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.15);
+            opacity: 0.85;
+        }
+        .history-toggle {
+            background: var(--send-btn);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+        .history-toggle:hover {
+            background: var(--send-btn-hover);
+            transform: translateY(-2px);
+        }
+        .reset-button {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 12px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+        .reset-button:hover {
+            background: rgba(255,255,255,0.03);
+            transform: translateY(-2px);
+        }
+        .history-container {
+            display: none;
+            max-height: 30vh;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--chat-bg);
+            border-bottom: 1px solid var(--border-color);
+            margin: 0 25px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .history-container.active {
+            display: block;
+        }
+        .history-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0.9;
+        }
+        .history-item.user {
+            color: var(--user-bubble);
+        }
+        .history-item.ai {
+            color: var(--ai-bubble);
+        }
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: var(--chat-bg);
+            border-radius: 20px;
+            margin: 25px;
+            box-shadow: 0 8px 24px var(--shadow);
+            transition: background-color 0.4s ease;
+        }
+        .chat-bubble {
+            max-width: 75%;
+            padding: 16px 20px;
+            border-radius: 24px;
+            font-size: 1.15rem;
+            display: inline-block;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            color: #1E293B;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: transform 0.2s ease;
+        }
+        .chat-bubble:hover {
+            transform: translateY(-2px);
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-bubble.user {
+            background: var(--user-bubble);
+            align-self: flex-end;
+            border-bottom-right-radius: 8px;
+        }
+        .chat-bubble.ai {
+            background: var(--ai-bubble);
+            align-self: flex-start;
+            border-bottom-left-radius: 8px;
+        }
+        .chat-bubble.ai::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 12px solid var(--ai-bubble);
+        }
+        .chat-bubble.user::before {
+            content: '';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 12px solid var(--user-bubble);
+        }
+        .input-container {
+            display: flex;
+            padding: 25px;
+            background: var(--input-bg);
+            border-top: 1px solid var(--border-color);
+            margin: 0 25px 25px 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px var(--shadow);
+            transition: background-color 0.4s ease;
+        }
+        input {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            outline: none;
+            font-size: 1.15rem;
+            background: var(--input-text-bg);
+            margin-right: 15px;
+            color: #1E293B;
+            transition: box-shadow 0.3s ease, background-color 0.4s ease;
+            box-shadow: inset 0 1px 3px var(--shadow);
+        }
+        input:focus {
+            box-shadow: 0 0 12px rgba(96, 165, 250, 0.5);
+        }
+        .send-button {
+            padding: 16px 32px;
+            background: var(--send-btn);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+        .send-button:hover {
+            background: var(--send-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .send-button:active {
+            transform: scale(0.97);
+        }
+        .mic-button {
+            padding: 16px;
+            background: var(--mic-btn);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+        .mic-button:hover {
+            background: var(--mic-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .mic-button.active {
+            background: var(--mic-btn-active);
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--ai-bubble);
+            border-radius: 24px;
+            align-self: flex-start;
+            color: #1E293B;
+            font-size: 1rem;
+            animation: slideIn 0.5s ease-out;
+        }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #1E293B;
+            border-radius: 50%;
+            animation: typing 1.2s infinite;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .intervention {
+            background: var(--intervention-bg);
+            color: #1E293B;
+            padding: 18px;
+            border-radius: 16px;
+            align-self: center;
+            text-align: center;
+            max-width: 65%;
+            margin: 15px 0;
+            animation: pulse 1.8s infinite;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(252, 211, 77, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(252, 211, 77, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(252, 211, 77, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="history-toggle" onclick="toggleHistory()">Show History</button>
+        <button class="reset-button" onclick="resetChat()">Reset Chat</button>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+    <div id="historyContainer" class="history-container"></div>
+    <div id="chatInterface" class="chat-container"></div>
+    <div class="input-container">
+        <input type="text" id="userInput" placeholder="Tell me anything..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()" class="send-button">Send</button>
+        <button id="micButton" class="mic-button" onclick="toggleVoiceInput()">🎤</button>
+    </div>
+
+    <script>
+        const chatContainer = document.querySelector('.chat-container');
+        const userInput = document.getElementById('userInput');
+        const micButton = document.getElementById('micButton');
+        const historyContainer = document.getElementById('historyContainer');
+
+        const session = {
+            userName: null,
+            userAge: null,
+            history: [],
+            moodTrend: [],
+            lastMood: null,
+            language: 'en'
+        };
+
+        async function analyzeSentiment(text) {
+            const keywords = {
+                positive: { words: ["happy", "good", "love", "excited", "great"], score: 2 },
+                neutral: { words: ["okay", "fine", "sure", "alright"], score: 0 },
+                negative: { words: ["sad", "bad", "angry", "hurt", "down"], score: -2 },
+                anxious: { words: ["nervous", "worried", "anxious", "scared"], score: -1 }
+            };
+            const lowerText = text.toLowerCase();
+            let moodScore = 0;
+            let detectedMood = 'neutral';
+            for (const [mood, data] of Object.entries(keywords)) {
+                if (data.words.some(word => lowerText.includes(word))) {
+                    moodScore += data.score;
+                    detectedMood = mood;
+                }
+            }
+            return { mood: detectedMood, score: moodScore };
+        }
+
+        if (localStorage.getItem('therapySession')) {
+            Object.assign(session, JSON.parse(localStorage.getItem('therapySession')));
+            chatContainer.innerHTML = localStorage.getItem('chatHistory') || '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            updateHistoryDisplay();
+            if (session.userName) {
+                addMessage(translate(`Hey ${session.userName}, so good to catch up with you! How’s your day going so far?`, session.language), 'ai');
+            }
+        } else {
+            addMessage(translate("Hey there, stranger! I’m all ears—mind telling me your name so we can get cozy?", session.language), 'ai');
+        }
+
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        let isRecording = false;
+
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            userInput.value = finalTranscript + interimTranscript;
+            console.log('Interim:', interimTranscript, 'Final:', finalTranscript);
+
+            if (finalTranscript) {
+                recognition.stop();
+                sendMessage();
+            }
+        };
+
+        recognition.onend = () => {
+            console.log('Recognition ended');
+            micButton.classList.remove('active');
+            isRecording = false;
+            userInput.placeholder = 'Tell me anything...';
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            micButton.classList.remove('active');
+            isRecording = false;
+            userInput.value = `Oops, something went wonky: ${event.error}. Wanna try again?`;
+        };
+
+        recognition.onstart = () => {
+            console.log('Recognition started');
+            micButton.classList.add('active');
+            isRecording = true;
+            userInput.value = '';
+            userInput.placeholder = 'Go ahead, I’m listening...';
+        };
+
+        function toggleVoiceInput() {
+            if (!isRecording) {
+                try {
+                    recognition.lang = session.language;
+                    recognition.start();
+                } catch (error) {
+                    console.error('Error starting recognition:', error);
+                    userInput.value = 'Mic’s acting up—check your permissions, maybe?';
+                }
+            } else {
+                recognition.stop();
+            }
+        }
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            userInput.value = '';
+            session.history.push({ sender: 'user', text: message, timestamp: Date.now(), lang: session.language });
+            updateHistoryDisplay();
+
+            setTimeout(() => {
+                addTypingIndicator();
+                const responseDelay = Math.min(2500, message.length * 60 + 600);
+                setTimeout(async () => {
+                    const response = await generateResponse(message);
+                    updateLastMessage(response);
+                    saveSession();
+                    triggerInterventionIfNeeded();
+                }, responseDelay);
+            }, 400);
+        }
+
+        function addMessage(text, sender, isIntervention = false) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('chat-bubble', sender);
+            if (isIntervention) bubble.classList.add('intervention');
+            bubble.innerHTML = text;
+            chatContainer.appendChild(bubble);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            localStorage.setItem('chatHistory', chatContainer.innerHTML);
+        }
+
+        function addTypingIndicator() {
+            const typing = document.createElement('div');
+            typing.classList.add('typing-indicator');
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            chatContainer.appendChild(typing);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function updateLastMessage(text) {
+            const lastBubble = chatContainer.lastChild;
+            if (lastBubble.classList.contains('typing-indicator')) {
+                lastBubble.remove();
+            }
+            addMessage(text, 'ai');
+            session.history.push({ sender: 'ai', text: text, timestamp: Date.now(), lang: session.language });
+            updateHistoryDisplay();
+        }
+
+        function saveSession() {
+            localStorage.setItem('therapySession', JSON.stringify(session));
+        }
+
+        async function generateResponse(userInput) {
+            if (!session.userName) {
+                session.userName = extractName(userInput) || userInput;
+                return translate(`Oh, ${session.userName}, love that name! Makes me smile already. How old are you, if you don’t mind me being a little nosy?`, session.language);
+            } else if (!session.userAge) {
+                session.userAge = parseInt(userInput) || "unknown";
+                return translate(`Hey ${session.userName}, you’re ${session.userAge === "unknown" ? "keeping it mysterious, huh?" : `${session.userAge} and fabulous!`}. So, what’s on your mind today, pal?`, session.language);
+            } else {
+                detectLanguage(userInput);
+                const sentiment = await analyzeSentiment(userInput);
+                session.moodTrend.push(sentiment.mood);
+                session.lastMood = sentiment.mood;
+
+                if (session.moodTrend.length > 3) {
+                    const recentTrend = session.moodTrend.slice(-4).reduce((sum, m) => sum + ({ positive: 2, neutral: 0, negative: -2, anxious: -1 }[m] || 0), 0);
+                    if (recentTrend < -4) sentiment.mood = 'negative';
+                    else if (recentTrend > 4) sentiment.mood = 'positive';
+                }
+
+                // If the user asked a question, try to answer it (Wikipedia fallback)
+                if (isQuestion(userInput)) {
+                    const answer = await answerQuestion(userInput);
+                    return translate(answer, session.language);
+                }
+
+                return translate(generateTherapyResponse(userInput, sentiment.mood), session.language);
+            }
+        }
+
+        function capitalizeName(name) {
+            if (!name) return '';
+            return name.split(/\s+/).map(part => {
+                part = part.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'’-]/g, '');
+                return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+            }).join(' ').trim();
+        }
+
+        function extractName(text) {
+            if (!text) return null;
+            let t = text.trim();
+            t = t.replace(/[.,!?]$/g, '').trim();
+
+            const pattern = /\b(?:my name is|name is|i am called|i'm called|call me|i am|i'm|this is)\s+([A-Za-zÀ-ÖØ-öø-ÿ'’-]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ'’-]+){0,2})\b/i;
+            const m = t.match(pattern);
+            if (m && m[1]) return capitalizeName(m[1]);
+
+            // If user just inputs one or two words, treat that as a name
+            const words = t.split(/\s+/).filter(Boolean);
+            if (words.length <= 2) return capitalizeName(words.join(' '));
+
+            // Otherwise try to find a capitalized token
+            for (let w of words) {
+                if (/^[A-Z][a-z]/.test(w)) return capitalizeName(w);
+            }
+
+            // Fallback: take last word
+            return capitalizeName(words[words.length - 1]);
+        }
+
+        function isQuestion(text) {
+            if (!text) return false;
+            const t = text.trim();
+            const lower = t.toLowerCase();
+            const qWords = ['who', 'what', 'when', 'where', 'why', 'how', 'which'];
+            if (lower.endsWith('?')) return true;
+            if (qWords.some(w => lower.startsWith(w + ' '))) return true;
+            // short heuristics: starts with 'explain', 'define', 'tell me'
+            if (/^(explain|define|tell me|give me|show me)\b/.test(lower)) return true;
+            return false;
+        }
+
+        async function answerQuestion(query) {
+            try {
+                const searchUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + encodeURIComponent(query) + '&limit=1&namespace=0&format=json&origin=*';
+                const searchRes = await fetch(searchUrl);
+                if (!searchRes.ok) throw new Error('Search failed');
+                const searchJson = await searchRes.json();
+                const title = searchJson[1] && searchJson[1][0];
+                if (title) {
+                    const summaryUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title);
+                    const sumRes = await fetch(summaryUrl);
+                    if (sumRes.ok) {
+                        const sumJson = await sumRes.json();
+                        if (sumJson.extract) {
+                            return `${sumJson.title}: ${sumJson.extract}`;
+                        }
+                    }
+                }
+                return `That’s a great question. I don't have a built-in answer for that, but I can help you look it up or suggest where to search.`;
+            } catch (err) {
+                console.error('answerQuestion error', err);
+                return `Sorry, I couldn't look that up right now. Try again later.`;
+            }
+        }
+
+        function detectLanguage(text) {
+            const langPatterns = {
+                'en': /\b(the|is|are|you)\b/i,
+                'es': /\b(el|la|es|tu)\b/i,
+                'fr': /\b(le|la|est|tu)\b/i
+            };
+            for (const [lang, pattern] of Object.entries(langPatterns)) {
+                if (pattern.test(text)) {
+                    session.language = lang;
+                    break;
+                }
+            }
+        }
+
+        function translate(text, lang) {
+            const translations = {
+                'en': text,
+                'es': text.replace("Hey there", "Hola").replace("How are you", "¿Cómo estás?").replace("I’m here", "Estoy aquí"),
+                'fr': text.replace("Hey there", "Salut").replace("How are you", "Comment vas-tu?").replace("I’m here", "Je suis là")
+            };
+            return translations[lang] || text;
+        }
+
+        function generateTherapyResponse(userInput, mood) {
+            const lastUserMessage = session.history.filter(h => h.sender === 'user').slice(-2, -1)[0]?.text || '';
+            const casualFillers = ["So, ", "Hey, ", "Oh wow, ", "You know, "];
+            const responses = {
+                positive: [
+                    `${session.userName}, you’re totally radiating good vibes today! What’s got you so chipper?`,
+                    `Aw, ${session.userName}, I can practically hear you grinning! Spill the beans—what’s making your heart happy?`
+                ],
+                neutral: [
+                    `${session.userName}, you sound like you’re doing alright. What’s been floating around in your head today?`,
+                    `Hey ${session.userName}, nice to chat with you! How’s your day been so far—anything fun or chill?`
+                ],
+                negative: [
+                    `Oh, ${session.userName}, I’m so sorry you’re feeling low. Wanna talk about what’s been weighing on you? I’m here.`,
+                    `${session.userName}, ugh, it sucks that you’re down. What’s been the hardest part? Let’s figure it out together.`
+                ],
+                anxious: [
+                    `Hey ${session.userName}, I can feel those jitters from here! What’s got your mind all tangled up?`,
+                    `${session.userName}, yikes, sounds like you’re on edge. Take a sec with me—what’s stirring up that nervous vibe?`
+                ]
+            };
+
+            // Add continuity if mood persists
+            if (session.history.length > 4 && session.lastMood === mood) {
+                return `${casualFillers[Math.floor(Math.random() * casualFillers.length)]}${session.userName}, I’m picking up that same ${mood === 'negative' ? 'heavy' : mood} feeling again. Still about ${lastUserMessage.slice(0, 20)}…? Or is something new bugging you?`;
+            }
+
+            // Short input response
+            if (userInput.length < 10) {
+                return `${casualFillers[Math.floor(Math.random() * casualFillers.length)]}${session.userName}, that’s a quick one! Wanna share a bit more? I’m all ears.`;
+            }
+
+            // Non-alphanumeric input
+            if (!userInput.match(/[a-zA-Z0-9]/)) {
+                return `Whoa, ${session.userName}, you’ve thrown me a curveball there! What’s going on in that heart of yours?`;
+            }
+
+            // Add a personal, human touch randomly
+            const personalTouch = Math.random() > 0.6 ? [
+                `I’ve got your back, you know.`,
+                `Really glad you’re here chatting with me.`,
+                `You’ve got this, and I’m rooting for you!`
+            ][Math.floor(Math.random() * 3)] : '';
+
+            const baseResponse = responses[mood][Math.floor(Math.random() * responses[mood].length)];
+            return `${casualFillers[Math.floor(Math.random() * casualFillers.length)]}${baseResponse} ${personalTouch}`.trim();
+        }
+
+        function triggerInterventionIfNeeded() {
+            const recentMoods = session.moodTrend.slice(-3);
+            if (recentMoods.every(m => m === 'negative')) {
+                addMessage(translate(`Hey ${session.userName}, hold up a sec—things feel pretty heavy, huh? How about we take a little breather together? Deep breath in for 4, hold it for 4, out for 4. How’s that feel?`, session.language), 'ai', true);
+            } else if (recentMoods.every(m => m === 'anxious')) {
+                addMessage(translate(`Okay ${session.userName}, you’re sounding super wound up. Wanna try something with me? Think of 3 tiny things that made you smile today—could be anything, even a good cup of coffee. Got any to share?`, session.language), 'ai', true);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const toggleButton = document.querySelector('.theme-toggle');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                toggleButton.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                toggleButton.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function toggleHistory() {
+            historyContainer.classList.toggle('active');
+            const toggleButton = document.querySelector('.history-toggle');
+            toggleButton.textContent = historyContainer.classList.contains('active') ? 'Hide History' : 'Show History';
+        }
+
+        function updateHistoryDisplay() {
+            historyContainer.innerHTML = '';
+            session.history.forEach(item => {
+                const div = document.createElement('div');
+                div.classList.add('history-item', item.sender);
+                const time = new Date(item.timestamp).toLocaleTimeString();
+                div.textContent = `[${time}] ${item.sender === 'user' ? 'You' : 'AI'}: ${item.text}`;
+                historyContainer.appendChild(div);
+            });
+            historyContainer.scrollTop = historyContainer.scrollHeight;
+        }
+
+        function resetChat() {
+            if (!confirm('Reset chat? This will clear conversation history.')) return;
+            session.userName = null;
+            session.userAge = null;
+            session.history = [];
+            session.moodTrend = [];
+            session.lastMood = null;
+            session.language = 'en';
+            chatContainer.innerHTML = '';
+            localStorage.removeItem('therapySession');
+            localStorage.removeItem('chatHistory');
+            updateHistoryDisplay();
+            saveSession();
+            addMessage(translate("Hey there, stranger! I’m all ears—mind telling me your name so we can get cozy?", session.language), 'ai');
+        }
+    </script>
+</body>
+</html>
