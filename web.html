@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Group Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Background and layout styles */
+        body {
+            font-family: 'Orbitron', sans-serif;
+            color: #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #0A192F, #091431, #0A1B3D, #12254B);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .heading {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px #4fc3f7;
+            animation: glowText 1.5s infinite alternate;
+        }
+
+        @keyframes glowText {
+            0% { text-shadow: 0 0 10px #4fc3f7; }
+            100% { text-shadow: 0 0 20px #4fc3f7, 0 0 30px #4fc3f7; }
+        }
+
+        .description {
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive grid for age group selection */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        /* Adjust grid for larger screens */
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Box styles with glowing effect */
+        .box {
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(8px);
+            border: 3px solid rgba(74, 144, 160, 0.7);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 220px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e0e0e0;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        @media (min-width: 768px) {
+            .box {
+                height: 250px;
+                font-size: 2.2rem;
+            }
+        }
+
+        .box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(74, 144, 160, 1);
+            border-color: #4fc3f7;
+        }
+
+        .box:active {
+            animation: bounce 0.4s ease;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            50% { transform: scale(0.9); }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Floating animation for boxes */
+        @keyframes floatBox {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .box:nth-child(1) { animation: floatBox 3s ease-in-out infinite; }
+        .box:nth-child(2) { animation: floatBox 3s ease-in-out infinite 0.5s; }
+        .box:nth-child(3) { animation: floatBox 3s ease-in-out infinite 1s; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="heading">Choose Your Age Group</h1>
+        <p class="description">Please select the appropriate age category to continue.</p>
+        
+        <div class="grid">
+            <div class="box" id="childrenBox">Children (5-12)</div>
+            <div class="box" id="teensBox">Teens (13-19)</div>
+            <div class="box" id="adultsBox">Adults (20+)</div>
+        </div>
+    </div>
+
+    <script>
+        function addClickEffect(id) {
+            const box = document.getElementById(id);
+            box.addEventListener('click', () => {
+                box.classList.add('clicked');
+                setTimeout(() => {
+                    box.classList.remove('clicked');
+                }, 400);
+            });
+        }
+
+        addClickEffect('childrenBox');
+        addClickEffect('teensBox');
+        addClickEffect('adultsBox');
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@100;200;400&family=Libre+Baskerville&family=Lora&family=Rubik+Doodle+Shadow&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>Team Portfolio</title>
+
+    <style>
+        body{
+        font-family: 'Lora';
+        color: aliceblue;
+        background-image: url("retro2.jpg");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-color: rgb(25, 9, 37);
+        }
+        #heading {
+        font-family: "Rubik Doodle Shadow";
+        font-size: 72px;
+        font-weight: 500;
+        margin-bottom: 45px;
+        }
+        .nav{
+            background-color: rgba(37, 16, 56, 0.924);
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            left: 0;
+        }
+        .nav .left{
+            float: left;
+        }
+        .nav .right{
+            float: right;
+        }
+        .nav a{
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        .nav a:hover{
+            background-color: #f2f2f2;
+            color: rgba(37, 16, 56, 0.924);
+        }
+        .nav .icon {
+            display: none;
+        }
+        .btn{
+            padding: 0.375rem 0.75rem;
+            font-size: 23px;
+            font-weight: 400;
+            line-height: 2;
+            color: whitesmoke;
+            background-color: rgba(37, 16, 56, 0.924);
+            border-width: 1px;
+            border-radius: 0.375rem;
+            box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.15),0 1px 1px rgba(0, 0, 0, 0.075);
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        section{
+            text-align: center;
+            margin: 0 10%;
+        }
+        legend{
+            font-size: 40px;
+    
+    
+        }
+        fieldset{
+            justify-content: center;
+            max-width: fit-content;
+            margin: calc(max-width*0.05) ;
+        }
+        .fele{
+            display: block;
+            padding: 2% 6%;
+            color: white;
+            background-color: rgb(161, 136, 184);
+            border: 1px solid #ced4da;
+        }
+        .fele:hover{
+            cursor: pointer;
+        }
+        .fele:focus {
+            border-color: rgb(25, 9, 37);
+        }
+        .fele::placeholder {
+            color: rgb(46, 45, 49);
+        }
+        .subbtn {
+            padding: 8px 10px;
+            color: black;
+            background-color: whitesmoke;
+            border-width: 1px;
+
+        }
+        form{
+            margin: auto;
+            max-width:max-content;
+        }
+        table{
+            margin: auto;
+            max-width: max-content;
+            border: 4px ridge rgb(161, 136, 184);
+            border-style: groove;
+            border-collapse: collapse;
+            padding: 3px;
+        }
+        th{
+            font-size: 24px;
+            border: 2px ridge rgb(161, 136, 184);
+        }
+        td{
+            border: 2px ridge rgb(161, 136, 184);
+        }
+        h1{
+            font-size: 36px;
+        }
+        p{
+            font-size: 20px;
+        }
+        .embd{
+            font-family: 'Lora';
+            text-decoration: none;
+            color: aliceblue;
+            font-size: 20px;
+            cursor:grab;
+        }
+
+@media screen and (max-width: 842px) {
+
+    .nav a:not(:first-child) {
+            display: none;        }
+
+    .nav a.icon {
+        float: right;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 842px) {
+    .nav.responsive {
+        position: relative;
+    }
+
+    .nav.responsive a.icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .nav.responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+}
+
+@media (min-width: 768px) {
+    header.frontpage {
+        padding-top: 17rem;
+        padding-bottom: 12.5rem;
+    }
+
+    header.frontpage .heading {
+        font-size: 2.25rem;
+        line-height: 2.25rem;
+        margin-bottom: 2rem;
+    }
+
+    header.frontpage .subheading {
+        font-size: 4.5rem;
+        font-weight: 700;
+        line-height: 4.5rem;
+        margin-bottom: 4rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn {
+        transition: none;
+    }
+}
+    </style>
+</head>
+
+<body id="homescreen">
+
+    <div class="nav" id="navbar">
+        <a href="#homescreen" class="left">Home</a>
+        <!--a href="#projs" class="right">Projects</a>
+        <a href="#cnw" class="right">Clubs and Workshops</a>
+        <a href="#skills" class="right">Skills</a>
+        <a href="#edu" class="right">Education</a>
+        <a href="#about" class="right">About Me</a-->
+        <a href="#rak" class="right">Rakshitha</a>
+        <a href="#rith" class="right">Rithika</a>
+        <a href="#riya" class="right">Riya</a>
+        <a href="#anann" class="right">Anannya</a>
+    </div>
+    <section>
+        <br>
+         <header class="frontpage">
+            <div id="heading"> My Portfolio</div>
+        
+        </header>
+    </section>
+    <br><br><br><br><br><br><br>
+
+
+        <article id="riya">
+            <section id="about">
+                <br><br>
+                <h1>Riya More</h1>
+                <p>Email: riyamore.btech23@rvu.edu.in</p>
+                <p>Phone: +91 96068 *****</p>
+            </section>
+        
+            <section id="edu">
+                <br>
+                <h2>Education</h2>
+                <br>
+                <table id="edutable">
+                    <tr>
+                        <th>Institutions</th>
+                        <th>Education</th>
+                        <th>Passed Out</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p> RV University </p>
+        
+                        </td>
+                        <td>
+                            <p> &nbsp;B. Tech (Hons) &nbsp;</p>
+                        </td>
+                        <td>
+                            <p> &nbsp;Expected: May 2027 &nbsp;</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p> &nbsp; Narayana College&nbsp; </p>
+        
+                        </td>
+                        <td>
+                            <p> 12 [CBSE]</p>
+                        </td>
+                        <td>
+                            <p> April 2023 </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>&nbsp; Orchids The International School &nbsp; </p>
+        
+                        </td>
+                        <td>
+                            <p> 10 [CBSE]</p>
+                        </td>
+                        <td>
+                            <p> April 2021 </p>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+            </section>
+        
+            <section id="skills">
+                <br>
+                <h2>Skills</h2>
+                <p>Programming - Java, Python, C, C++</p>
+                <p>Development - HTML, CSS, JavaScript</p>
+                <p>Database Management - SQL</p>
+            </section>
+        
+            <section id="cnw">
+                <br>
+                <h2>Certificates and Workshops</h2>
+                <p>Certificate of Completion of course in "Python, Intro to AI, Blockchain , Cloud Computing, Cyber Security" on
+                    Infosys Springboard</p>
+                
+                </p>
+                <p>Certificate of Appreciation for successfully
+                    completing Git & GitHub Workshop (25 October 2023) </p>
+                <p>Certificate of Appreciation for successfully completing "AI in Healthcare" internship </p>
+            </section>
+        </article>
+
+    
+
+
+
+
+
+<footer>
+
+
+<br><br><br><br>
+    <article id="info">
+       <div> &copy; Copyright 2023 Runtime Rebels</div>
+        <div> For more information: email us</div>
+    </article>
+</footer>
+
+</body>
+
+</html>
